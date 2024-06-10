@@ -10,6 +10,8 @@ print(mem_alloc_1)
 print(mem_alloc_1.buf)
 print(len(mem_alloc_1.buf))
 
+with open("log.txt", "w") as f:
+    pass
 def write_to_log(val):
     f = open("log.txt", "a")
     f.write(str(val) + "\n")
