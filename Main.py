@@ -124,6 +124,7 @@ if __name__ == "__main__":
 #------------------------------------------------------------------------------------------------------ 
     elif input == "P":
 
+        PipesKelvin.benannte_pipes()
         ProzessIDs = []
     
         ProzessIDs.append(os.fork())
