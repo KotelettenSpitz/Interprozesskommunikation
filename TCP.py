@@ -7,6 +7,7 @@ import sys
 import struct
 
 def conv_process():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
     server1.bind(('localhost', 9999))
     server2.bind(('localhost', 9998))
     
@@ -23,6 +24,7 @@ def conv_process():
         time.sleep(1)
 
 def log_process():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
     while True:
         try:
             client.connect(('localhost', 9999))
@@ -39,6 +41,7 @@ def log_process():
             log.flush()
 
 def stat_process():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
     while True:
         try:
             server.connect(('localhost', 9998))
@@ -65,6 +68,7 @@ def stat_process():
 
 
 def report_process():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
     while True:
         try:
             client3.connect(('localhost', 9996))
