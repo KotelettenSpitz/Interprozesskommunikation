@@ -6,6 +6,18 @@ import signal
 import sys
 import struct
 
+def create_socket():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    return s
+
+server1 = create_socket()
+server2 = create_socket()
+client = create_socket()
+server = create_socket()
+server3 = create_socket()
+client3 = create_socket()
+
 def conv_process():
     signal.signal(signal.SIGINT, signal.SIG_IGN)
     server1.bind(('localhost', 9999))
@@ -87,67 +99,3 @@ def create_socket():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     return s
-
-
-def signal_handler(signum, frame):
-    print("\nBeende das Programm...")
-    for pid in ProzessIDs:
-        try:
-            os.kill(pid, signal.SIGTERM)
-        except ProcessLookupError:
-            continue
-    for pid in ProzessIDs:
-        try:
-            os.waitpid(pid, 0)
-        except ChildProcessError:
-            continue
-        for sock in [server1, server2, client, server, server3, client3]:
-            try:
-                sock.close()
-            except Exception:
-                continue
-        sys.exit(0)
-
-
-if __name__ == "__main__":
-
-    server1 = create_socket()
-    server2 = create_socket()
-    client = create_socket()
-    server = create_socket()
-    server3 = create_socket()
-    client3 = create_socket()
-
-    ProzessIDs = []
-    
-    ProzessIDs.append(os.fork())
-    if ProzessIDs[-1] == 0:
-        conv_process()
-        os._exit(0)
-
-    time.sleep(5)
-
-    ProzessIDs.append(os.fork())
-    if ProzessIDs[-1] == 0:
-        log_process()
-        os._exit(0)
-    
-    ProzessIDs.append(os.fork())
-    if ProzessIDs[-1] == 0:
-        stat_process()
-        os._exit(0)
-
-    time.sleep(5)
-    
-    ProzessIDs.append(os.fork())
-    if ProzessIDs[-1] == 0:
-        report_process()
-        os._exit(0)
-
-    signal.signal(signal.SIGINT, signal_handler)
-    
-    while True:
-        try:
-            time.sleep(1)
-        except KeyboardInterrupt:
-            signal_handler(signal.SIGINT, None)

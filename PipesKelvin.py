@@ -22,7 +22,7 @@ def entfernen_pipes():
             os.remove(pipe)
 
 # Conv: Generiert zufällige Messwerte und schickt 
-def conv():
+def conv_process():
     with open(conv_zu_log_pipe, 'w') as conv_zu_log, open(conv_zu_stat_pipe, 'w') as conv_zu_stat:
         while True:
             value = random.randint(0, 1000)  
@@ -34,7 +34,7 @@ def conv():
             time.sleep(0.5)  # 0,5 Sekunden warten, bevor der nächste Wert generiert wird
 
 # Log: Empfängt Messwerte/schreibt sie in Datei
-def log():
+def log_process():
     with open("/tmp/werte.log", 'a') as log_datei, open(conv_zu_log_pipe, 'r') as log_recv:
         while True:
             value = log_recv.readline().strip()
@@ -44,7 +44,7 @@ def log():
             time.sleep(0.5) 
 
 # Stat: Empfängt Messwerte, berechnet Statistiken und sendet diese 
-def stat():
+def stat_process():
     values = []
     with open(conv_zu_stat_pipe, 'r') as stat_recv, open(stat_zu_report_pipe, 'w') as stat_to_report:
         while True:
@@ -61,7 +61,7 @@ def stat():
             time.sleep(0.5)  
 
 # Report: Empfängt Statistiken und gibt sie aus
-def report():
+def report_process():
     with open(stat_zu_report_pipe, 'r') as report_recv:
         while True:
             stats = report_recv.readline().strip().split()
