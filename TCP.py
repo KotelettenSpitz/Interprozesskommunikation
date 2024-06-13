@@ -66,16 +66,14 @@ def stat_process():
     server3.listen(1)
     client_socket, addr = server3.accept()
 
-    total = 0
-    count = 0
+    values = []
 
     while True:
         data = server.recv(4)
         value = struct.unpack('i', data)[0]
-        total += value
-        count += 1
-        average = total // count
-        client_socket.sendall(struct.pack('2i', total, average))
+        values.append(value)
+        average = sum(values) // len(values)
+        client_socket.sendall(struct.pack('2i', sum(values), average))
         time.sleep(1)
 
 
