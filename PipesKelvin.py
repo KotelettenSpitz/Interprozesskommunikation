@@ -51,13 +51,11 @@ def stat_process():
             value = stat_recv.readline().strip()
             if value:
                 values.append(int(value))
-                if len(values) >= 3:
-                    mean = sum(values) / len(values)
-                    total_sum = sum(values)
-                    stats = {'mean': round(mean, 2), 'sum': total_sum}
-                    stat_to_report.write(f"{stats['mean']} {stats['sum']}\n")
-                    stat_to_report.flush()
-                    values = []
+                mean = sum(values) / len(values)
+                total_sum = sum(values)
+                stats = {'mean': round(mean, 2), 'sum': total_sum}
+                stat_to_report.write(f"{stats['mean']} {stats['sum']}\n")
+                stat_to_report.flush()
             time.sleep(1)  
 
 # Report: Empfängt Statistiken und gibt sie aus
