@@ -31,7 +31,7 @@ def conv_process():
                 conv_zu_log.flush()
                 conv_zu_stat.write(f"{value}\n")
                 conv_zu_stat.flush()
-            time.sleep(0.5)  # 0,5 Sekunden warten, bevor der nächste Wert generiert wird
+            time.sleep(1)  # 0,5 Sekunden warten, bevor der nächste Wert generiert wird
 
 # Log: Empfängt Messwerte/schreibt sie in Datei
 def log_process():
@@ -41,7 +41,7 @@ def log_process():
             if value:
                 log_datei.write(f"{value}\n")
                 log_datei.flush()
-            time.sleep(0.5) 
+            time.sleep(1) 
 
 # Stat: Empfängt Messwerte, berechnet Statistiken und sendet diese 
 def stat_process():
@@ -58,7 +58,7 @@ def stat_process():
                     stat_to_report.write(f"{stats['mean']} {stats['sum']}\n")
                     stat_to_report.flush()
                     values = []
-            time.sleep(0.5)  
+            time.sleep(1)  
 
 # Report: Empfängt Statistiken und gibt sie aus
 def report_process():
@@ -68,4 +68,4 @@ def report_process():
             if stats:
                 mean, total_sum = float(stats[0]), int(stats[1])
                 print(f"Mittelwert: {mean:.2f}, Summe: {total_sum:.2f}")
-            time.sleep(0.5) 
+            time.sleep(1) 
