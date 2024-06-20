@@ -32,18 +32,15 @@ print(f"Shared Memory 2 Buffer: {mem_alloc_2[:]}")
 print(f"Shared Memory 2 Size: {len(mem_alloc_2)}")
 """
 
-def random_input():
-    return random.randint(0, 100)
-
 try:
     while True:
         x = 0
         while True:
-            val = random_input()
-            semaphore.acquire()  # Acquire semaphore
+            val = random.randint(0, 100)
+            semaphore.acquire()
             mem_alloc_1[x] = val
             mem_alloc_2[x] = val
-            semaphore.release()  # Release semaphore
+            semaphore.release()
             x += 1
             if x == ALLOC_SIZE:
                 break
