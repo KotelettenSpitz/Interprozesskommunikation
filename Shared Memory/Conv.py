@@ -36,7 +36,7 @@ try:
     while True:
         x = 0
         while True:
-            val = random.randint(0, 100)
+            val = random.randint(1, 99)
             semaphore.acquire()
             mem_alloc_1[x] = val
             mem_alloc_2[x] = val

@@ -20,4 +20,3 @@ for Datei_Name in Dateien:
 
 for _ in range(len(Dateien)):
     os.wait()
-

@@ -18,10 +18,10 @@ def open_shared_memory(name, size):
         os.close(shm_fd)
         return speicher
     except FileNotFoundError:
-        print(f"Shared memory '{name}' not found.")
+        print(f"Shared memory '{name}' nicht gefunden.")
         exit(1)
     except Exception as e:
-        print(f"An error occurred while accessing shared memory '{name}': {e}")
+        print(f"Fehler beim Zugriff auf Shared Memory. '{name}': {e}")
         exit(1)
 
 mem_alloc_1 = open_shared_memory(ALLOC_NAME, ALLOC_SIZE)

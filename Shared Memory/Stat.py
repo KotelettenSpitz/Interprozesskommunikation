@@ -1,7 +1,7 @@
-import os, mmap, posix_ipc
+import os, mmap, time, posix_ipc, struct
 
 ALLOC_SIZE_1 = 64
-ALLOC_SIZE_2 = 8
+ALLOC_SIZE_2 = 16
 ALLOC_NAME_1 = "/dev/shm/mem2"
 ALLOC_NAME_2 = "/dev/shm/mem3"
 SEMAPHORE_NAME = "/semaphore"
@@ -13,6 +13,7 @@ except posix_ipc.ExistentialError:
 
 semaphore = posix_ipc.Semaphore(SEMAPHORE_NAME, posix_ipc.O_CREAT, initial_value=1)
 
+
 def open_shared_memory(name, size):
     try:
         shm_fd = os.open(name, os.O_RDWR)
@@ -23,8 +24,9 @@ def open_shared_memory(name, size):
         print(f"Shared memory '{name}' not found.")
         exit(1)
     except Exception as e:
-        print(f"An error occurred while accessing shared memory '{name}': {e}")
+        print(f"Error accessing shared memory '{name}': {e}")
         exit(1)
+
 
 def create_shared_memory(name, size):
     try:
@@ -37,34 +39,41 @@ def create_shared_memory(name, size):
         print(f"Shared memory '{name}' not found.")
         exit(1)
     except Exception as e:
-        print(f"An error occurred while accessing shared memory '{name}': {e}")
+        print(f"Error accessing shared memory '{name}': {e}")
         exit(1)
+
 
 mem_alloc_1 = open_shared_memory(ALLOC_NAME_1, ALLOC_SIZE_1)
 mem_alloc_2 = create_shared_memory(ALLOC_NAME_2, ALLOC_SIZE_2)
 
-"""
-print(f"Shared Memory 1: {mem_alloc_1}")
-print(f"Shared Memory 1 Buffer: {mem_alloc_1[:]}")
-print(f"Shared Memory 1 Size: {len(mem_alloc_1)}")
-"""
+total = 0
+y = 1
 
 while True:
-    total_sum = 0
+    summe = 0
+    lauf = 0
     x = 0
     while True:
         semaphore.acquire()
-        val = mem_alloc_1[x]
+        summe = mem_alloc_1[x]
         semaphore.release()
-        total_sum += val
+        total += summe
+        lauf += summe
         x += 1
         if x == ALLOC_SIZE_1:
+            avg = total / (y * 64)
+            total_byte = total.to_bytes(8, 'little')
+            avg_byte = bytearray(struct.pack("d", avg))
+            result_bytes = bytearray(total_byte)
+            result_bytes.extend(avg_byte)
+            semaphore.acquire()
+            mem_alloc_2[:8] = total_byte
+            mem_alloc_2[8:16] = avg_byte
+            semaphore.release()
             break
+    y += 1
 
-    data = total_sum.to_bytes(8, 'little')
-    semaphore.acquire()
-    mem_alloc_2[:8] = data
-    semaphore.release()
+    time.sleep(1)
 
 time.sleep(1000)
-sem.unlink()
+semaphore.unlink()

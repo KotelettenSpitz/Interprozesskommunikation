@@ -1,6 +1,6 @@
-import time, os, mmap, posix_ipc
+import time, os, mmap, posix_ipc, struct
 
-ALLOC_SIZE = 8
+ALLOC_SIZE = 16
 ALLOC_NAME = "/dev/shm/mem3"
 SEMAPHORE_NAME = "/semaphore"
 
@@ -10,6 +10,7 @@ except posix_ipc.ExistentialError:
     pass
 
 semaphore = posix_ipc.Semaphore(SEMAPHORE_NAME, posix_ipc.O_CREAT, initial_value=1)
+
 
 def open_shared_memory(name, size):
     try:
@@ -21,8 +22,9 @@ def open_shared_memory(name, size):
         print(f"Shared memory '{name}' not found.")
         exit(1)
     except Exception as e:
-        print(f"An error occurred while accessing shared memory '{name}': {e}")
+        print(f"Error accessing shared memory '{name}': {e}")
         exit(1)
+
 
 mem_alloc = open_shared_memory(ALLOC_NAME, ALLOC_SIZE)
 
@@ -35,25 +37,17 @@ for col in spalten:
     print(f" {col} |", end="")
 print("\n" + design)
 
-total = 0
-y = 64
-
 try:
-    x = 0
     while True:
-        time.sleep(1)
         semaphore.acquire()
-        summe = int.from_bytes(mem_alloc[:8], 'little')
-        total += summe
-        semaphore.release()
-        zaehler = total
 
-        if zaehler > 0:
-            mean = total / y
-        else:
-            mean = 0
-        print(f"| {time.strftime('%H:%M:%S')} | {total:5} | {mean:9.2f} |")
-        y += 64
+        total_bytes = int.from_bytes(mem_alloc[:8], 'little')
+        avg_bytes = struct.unpack("d", mem_alloc[8:16])[0]
+
+        semaphore.release()
+
+        print(f"| {time.strftime('%H:%M:%S')} | {total_bytes:5} | {avg_bytes:9.2f} |")
+        time.sleep(1)
 
 finally:
     semaphore.unlink()
