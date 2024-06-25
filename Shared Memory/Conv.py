@@ -1,4 +1,5 @@
-import random, os, mmap, posix_ipc
+import random, posix_ipc
+from memory import create_shared_memory
 
 ALLOC_SIZE = 64
 ALLOC_NAME_1 = "/dev/shm/mem1"
@@ -12,12 +13,6 @@ except posix_ipc.ExistentialError:
 
 semaphore = posix_ipc.Semaphore(SEMAPHORE_NAME, posix_ipc.O_CREAT, initial_value=1)
 
-def create_shared_memory(name, size):
-    shm_fd = os.open(name, os.O_CREAT | os.O_TRUNC | os.O_RDWR)
-    os.ftruncate(shm_fd, size)
-    speicher = mmap.mmap(shm_fd, size, mmap.MAP_SHARED, mmap.PROT_WRITE | mmap.PROT_READ)
-    os.close(shm_fd)
-    return speicher
 
 mem_alloc_1 = create_shared_memory(ALLOC_NAME_1, ALLOC_SIZE)
 mem_alloc_2 = create_shared_memory(ALLOC_NAME_2, ALLOC_SIZE)
@@ -36,7 +31,7 @@ try:
     while True:
         x = 0
         while True:
-            val = random.randint(1, 99)
+            val = random.randint(0, 99)
             semaphore.acquire()
             mem_alloc_1[x] = val
             mem_alloc_2[x] = val

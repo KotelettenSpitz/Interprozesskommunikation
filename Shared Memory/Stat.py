@@ -1,4 +1,6 @@
-import os, mmap, time, posix_ipc, struct
+import time, posix_ipc, struct
+from memory import create_shared_memory
+from memory import open_shared_memory
 
 ALLOC_SIZE_1 = 64
 ALLOC_SIZE_2 = 16
@@ -12,35 +14,6 @@ except posix_ipc.ExistentialError:
     pass
 
 semaphore = posix_ipc.Semaphore(SEMAPHORE_NAME, posix_ipc.O_CREAT, initial_value=1)
-
-
-def open_shared_memory(name, size):
-    try:
-        shm_fd = os.open(name, os.O_RDWR)
-        speicher = mmap.mmap(shm_fd, size, mmap.MAP_SHARED, mmap.PROT_WRITE | mmap.PROT_READ)
-        os.close(shm_fd)
-        return speicher
-    except FileNotFoundError:
-        print(f"Shared memory '{name}' not found.")
-        exit(1)
-    except Exception as e:
-        print(f"Error accessing shared memory '{name}': {e}")
-        exit(1)
-
-
-def create_shared_memory(name, size):
-    try:
-        shm_fd = os.open(name, os.O_CREAT | os.O_TRUNC | os.O_RDWR)
-        os.ftruncate(shm_fd, size)
-        speicher = mmap.mmap(shm_fd, size, mmap.MAP_SHARED, mmap.PROT_WRITE | mmap.PROT_READ)
-        os.close(shm_fd)
-        return speicher
-    except FileNotFoundError:
-        print(f"Shared memory '{name}' not found.")
-        exit(1)
-    except Exception as e:
-        print(f"Error accessing shared memory '{name}': {e}")
-        exit(1)
 
 
 mem_alloc_1 = open_shared_memory(ALLOC_NAME_1, ALLOC_SIZE_1)

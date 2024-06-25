@@ -1,4 +1,5 @@
-import os, mmap, posix_ipc
+import posix_ipc
+from memory import open_shared_memory
 
 ALLOC_SIZE = 64
 ALLOC_NAME = "/dev/shm/mem1"
@@ -11,18 +12,6 @@ except posix_ipc.ExistentialError:
 
 semaphore = posix_ipc.Semaphore(SEMAPHORE_NAME, posix_ipc.O_CREAT, initial_value=1)
 
-def open_shared_memory(name, size):
-    try:
-        shm_fd = os.open(name, os.O_RDWR)
-        speicher = mmap.mmap(shm_fd, size, mmap.MAP_SHARED, mmap.PROT_WRITE | mmap.PROT_READ)
-        os.close(shm_fd)
-        return speicher
-    except FileNotFoundError:
-        print(f"Shared memory '{name}' nicht gefunden.")
-        exit(1)
-    except Exception as e:
-        print(f"Fehler beim Zugriff auf Shared Memory. '{name}': {e}")
-        exit(1)
 
 mem_alloc_1 = open_shared_memory(ALLOC_NAME, ALLOC_SIZE)
 
@@ -35,9 +24,11 @@ print(f"Shared Memory Size: {len(mem_alloc_1)}")
 with open("log.txt", "w") as f:
     pass
 
+
 def write_to_log(val):
     with open("log.txt", "a") as f:
         f.write(str(val) + "\n")
+
 
 try:
     while True:
