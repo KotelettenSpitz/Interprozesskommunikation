@@ -31,18 +31,20 @@ print(f"Shared Memory 2 Buffer: {mem_alloc_2[:]}")
 print(f"Shared Memory 2 Size: {len(mem_alloc_2)}")
 """
 
-try:
-    # Endlosschleife zum Schreiben von Zufallswerten in die Shared Memory Bereiche
-    while True:
-        x = 0
+
+def conv_process():
+    try:
+        # Endlosschleife zum Schreiben von Zufallswerten in die Shared Memory Bereiche
         while True:
-            val = random.randint(0, 99)
-            semaphore.acquire()  # Semaphore sperren
-            mem_alloc_1[x] = val  # Wert in den ersten Shared Memory Bereich schreiben
-            mem_alloc_2[x] = val
-            semaphore.release()  # Semaphore freigeben
-            x += 1
-            if x == ALLOC_SIZE:
-                break
-finally:
-    semaphore.unlink()  # Semaphore entfernen
+            x = 0
+            while True:
+                val = random.randint(0, 99)
+                semaphore.acquire()  # Semaphore sperren
+                mem_alloc_1[x] = val  # Wert in den ersten Shared Memory Bereich schreiben
+                mem_alloc_2[x] = val
+                semaphore.release()  # Semaphore freigeben
+                x += 1
+                if x == ALLOC_SIZE:
+                    break
+    finally:
+        semaphore.unlink()  # Semaphore entfernen

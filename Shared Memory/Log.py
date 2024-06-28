@@ -34,17 +34,19 @@ def write_to_log(val):
     with open("log.txt", "a") as f:
         f.write(str(val) + "\n")
 
-try:
-    # Endlosschleife zum Lesen von Werten aus dem Shared Memory Bereich und Schreiben in die Logdatei
-    while True:
-        x = 0
+
+def log_process():
+    try:
+        # Endlosschleife zum Lesen von Werten aus dem Shared Memory Bereich und Schreiben in die Logdatei
         while True:
-            semaphore.acquire()  # Semaphore sperren
-            val = mem_alloc_1[x]  # Wert aus dem Shared Memory Bereich lesen
-            semaphore.release()  # Semaphore freigeben
-            write_to_log(val)  # Wert in die Logdatei schreiben
-            x += 1
-            if x == ALLOC_SIZE:
-                break
-finally:
-    semaphore.unlink()  # Semaphore entfernen
+            x = 0
+            while True:
+                semaphore.acquire()  # Semaphore sperren
+                val = mem_alloc_1[x]  # Wert aus dem Shared Memory Bereich lesen
+                semaphore.release()  # Semaphore freigeben
+                write_to_log(val)  # Wert in die Logdatei schreiben
+                x += 1
+                if x == ALLOC_SIZE:
+                    break
+    finally:
+        semaphore.unlink()  # Semaphore entfernen
