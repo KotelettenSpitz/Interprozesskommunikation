@@ -1,4 +1,4 @@
-import time, posix_ipc, struct
+import time, posix_ipc, struct, os
 from memory import open_shared_memory
 
 # Konstanten für Speichergröße, Namen des Shared Memory Bereichs und des Semaphors
@@ -29,20 +29,23 @@ for col in spalten:
     print(f" {col} |", end="")
 print("\n" + design)
 
-try:
-    # Endlosschleife zum Lesen von Werten aus dem Shared Memory Bereich und Ausgabe in tabellarischer Form
-    while True:
-        semaphore.acquire()  # Semaphore sperren
 
-        # Gesamtsumme aus den ersten 8 Bytes des Shared Memory Bereichs lesen
-        total_bytes = int.from_bytes(mem_alloc[:8], 'little')
-        # Durchschnitt aus den nächsten 8 Bytes des Shared Memory Bereichs lesen
-        avg_bytes = struct.unpack("d", mem_alloc[8:16])[0]
+def report_process():
+    try:
+        # Endlosschleife zum Lesen von Werten aus dem Shared Memory Bereich und Ausgabe in tabellarischer Form
+        while True:
+            semaphore.acquire()  # Semaphore sperren
 
-        semaphore.release()  # Semaphore freigeben
+            # Gesamtsumme aus den ersten 8 Bytes des Shared Memory Bereichs lesen
+            total_bytes = int.from_bytes(mem_alloc[:8], 'little')
+            # Durchschnitt aus den nächsten 8 Bytes des Shared Memory Bereichs lesen
+            avg_bytes = struct.unpack("d", mem_alloc[8:16])[0]
 
-        # Aktuelle Zeit, Gesamtsumme und Durchschnitt werden in tabellarischer Form ausgegeben
-        print(f"| {time.strftime('%H:%M:%S')} | {total_bytes:5} | {avg_bytes:9.2f} |")
-        time.sleep(1)
-finally:
-    semaphore.unlink()  # Semaphore entfernen
+            semaphore.release()  # Semaphore freigeben
+
+            # Aktuelle Zeit, Gesamtsumme und Durchschnitt werden in tabellarischer Form ausgegeben
+            print(f"| {time.strftime('%H:%M:%S')} | {total_bytes:5} | {avg_bytes:9.2f} |")
+            time.sleep(1)
+    finally:
+        if os.getpid() == os.getppid():  # Nur der Hauptprozess entfernt das Semaphore
+            semaphore.unlink()  # Semaphore entfernen
