@@ -11,14 +11,9 @@ def create_socket():
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     return s
 
-server1 = create_socket()
-server2 = create_socket()
-client = create_socket()
-server = create_socket()
-server3 = create_socket()
-client3 = create_socket()
-
 def conv_process():
+    server1 = create_socket()
+    server2 = create_socket()
     server1.bind(('localhost', 9999))
     server2.bind(('localhost', 9998))
     
@@ -39,6 +34,7 @@ def conv_process():
         server2.close()
 
 def log_process():
+    client = create_socket()
     while True:
         try:
             client.connect(('localhost', 9999))
@@ -57,6 +53,8 @@ def log_process():
         client.close()
 
 def stat_process():
+    server = create_socket()
+    server3 = create_socket()
     while True:
         try:
             server.connect(('localhost', 9998))
@@ -84,6 +82,7 @@ def stat_process():
 
 
 def report_process():
+    client3 = create_socket()
     while True:
         try:
             client3.connect(('localhost', 9996))
