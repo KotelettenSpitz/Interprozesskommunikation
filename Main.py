@@ -4,6 +4,10 @@ import signal
 import TCP
 import MessageQueues
 import PipesKelvin
+import Conv
+import Log
+import Stat
+import Report
 
 if __name__ == "__main__":
 
@@ -47,6 +51,12 @@ if __name__ == "__main__":
         ProzessIDs.append(prozess_starten(PipesKelvin.log_process))
         ProzessIDs.append(prozess_starten(PipesKelvin.stat_process))
         ProzessIDs.append(prozess_starten(PipesKelvin.report_process))
+
+    if input == "S":
+        ProzessIDs.append(prozess_starten(Conv.conv_process))
+        ProzessIDs.append(prozess_starten(Log.log_process))
+        ProzessIDs.append(prozess_starten(Stat.stat_process))
+        ProzessIDs.append(prozess_starten(Report.report_process))
 
     signal.signal(signal.SIGINT, signal_handler)
     
