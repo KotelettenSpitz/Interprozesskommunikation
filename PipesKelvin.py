@@ -61,17 +61,6 @@ def stat_process():
 # Report: Empfängt Statistiken und gibt sie aus
 def report_process():
 
-    # Tabellenüberschrift und Design für die Ausgabe
-    spalten = ["Zeit", "Summe", "Mittelwert"]
-    design = "+" + "+".join(["-" * (len(col) + 2) for col in spalten]) + "+"
-
-    # Tabellenüberschrift ausgeben
-    print(design)
-    print("|", end="")
-    for col in spalten:
-        print(f" {col} |", end="")
-    print("\n" + design)
-
     with open(stat_zu_report_pipe, 'r') as report_recv:
         try:
             while True:

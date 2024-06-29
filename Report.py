@@ -20,17 +20,6 @@ mem_alloc = open_shared_memory(ALLOC_NAME, ALLOC_SIZE)
 
 def report_process():
 
-    # Tabellenüberschrift und Design für die Ausgabe
-    spalten = ["Zeit", "Summe", "Mittelwert"]
-    design = "+" + "+".join(["-" * (len(col) + 2) for col in spalten]) + "+"
-
-    # Tabellenüberschrift ausgeben
-    print(design)
-    print("|", end="")
-    for col in spalten:
-        print(f" {col} |", end="")
-    print("\n" + design)
-    
     try:
         # Endlosschleife zum Lesen von Werten aus dem Shared Memory Bereich und Ausgabe in tabellarischer Form
         while True:
