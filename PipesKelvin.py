@@ -28,7 +28,7 @@ def conv_process():
 
 # Log: Empfängt Messwerte/schreibt sie in Datei
 def log_process():
-    with open("/tmp/werte.log", 'a') as log_datei, open(conv_zu_log_pipe, 'r') as log_recv:
+    with open("log.txt", 'a') as log_datei, open(conv_zu_log_pipe, 'r') as log_recv:
         try:
             while True:
                 value = log_recv.readline().strip()

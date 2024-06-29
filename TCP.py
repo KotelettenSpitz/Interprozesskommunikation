@@ -50,7 +50,7 @@ def log_process():
         while True:
             data = client.recv(4)
             value = struct.unpack('i', data)[0]
-            with open("Log_Yusuf.txt", "a") as log:
+            with open("log.txt", "a") as log:
                 log.write(str(value) + "\n")
                 log.flush()
     except KeyboardInterrupt:
@@ -91,7 +91,7 @@ def report_process():
         except ConnectionRefusedError:
             time.sleep(1)
             continue
-        
+
     try:
         while True:
             data = client3.recv(8)
