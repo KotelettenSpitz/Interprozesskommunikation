@@ -60,13 +60,25 @@ def stat_process():
 
 # Report: Empfängt Statistiken und gibt sie aus
 def report_process():
+
+    # Tabellenüberschrift und Design für die Ausgabe
+    spalten = ["Zeit", "Summe", "Mittelwert"]
+    design = "+" + "+".join(["-" * (len(col) + 2) for col in spalten]) + "+"
+
+    # Tabellenüberschrift ausgeben
+    print(design)
+    print("|", end="")
+    for col in spalten:
+        print(f" {col} |", end="")
+    print("\n" + design)
+
     with open(stat_zu_report_pipe, 'r') as report_recv:
         try:
             while True:
                 stats = report_recv.readline().strip().split()
                 if stats:
                     mean, total_sum = float(stats[0]), int(stats[1])
-                    print(f"Mittelwert: {mean:.2f}, Summe: {total_sum:.2f}")
+                    print(f"| {time.strftime('%H:%M:%S')} | {total_sum} | {mean} |")
                 time.sleep(1) 
         except KeyboardInterrupt:
             pass

@@ -44,11 +44,23 @@ def stat_process():
         mq3.unlink()
 
 def report_process():
+
+    # Tabellenüberschrift und Design für die Ausgabe
+    spalten = ["Zeit", "Summe", "Mittelwert"]
+    design = "+" + "+".join(["-" * (len(col) + 2) for col in spalten]) + "+"
+
+    # Tabellenüberschrift ausgeben
+    print(design)
+    print("|", end="")
+    for col in spalten:
+        print(f" {col} |", end="")
+    print("\n" + design)
+    
     try:
         while True:
             sum_values, average = ReceiveFromQueue("/mq3")
             if sum_values is not None and average is not None:
-                print(f"Summe: {sum_values}, Durchschnitt: {average}")
+                print(f"| {time.strftime('%H:%M:%S')} | {sum_values} | {average} |")
             time.sleep(1)
     except KeyboardInterrupt:
         pass

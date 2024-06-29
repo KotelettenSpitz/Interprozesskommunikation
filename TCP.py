@@ -91,10 +91,22 @@ def report_process():
         except ConnectionRefusedError:
             time.sleep(1)
             continue
+
+    # Tabellenüberschrift und Design für die Ausgabe
+    spalten = ["Zeit", "Summe", "Mittelwert"]
+    design = "+" + "+".join(["-" * (len(col) + 2) for col in spalten]) + "+"
+
+    # Tabellenüberschrift ausgeben
+    print(design)
+    print("|", end="")
+    for col in spalten:
+        print(f" {col} |", end="")
+    print("\n" + design)
+
     try:
         while True:
             data = client3.recv(8)
             sum, avg = struct.unpack('2i', data)
-            print("Summe: " + str(sum) + ", Durchschnitt: " + str(avg))
+            print(f"| {time.strftime('%H:%M:%S')} | {sum} | {avg} |")
     except KeyboardInterrupt:
         client3.close()
