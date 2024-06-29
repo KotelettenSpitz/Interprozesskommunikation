@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     input = input("Wählen sie ihre Implementierungsvariante: ")
 
-    if input == "T" or input == "S" or input == "M" or input == "P":
+    if input == "T" or input == "S" or input == "M" or input == "P" or input == "t" or input == "s" or input == "m" or input == "p" :
         # Tabellenüberschrift und Design für die Ausgabe
         spalten = ["Zeit", "Summe", "Mittelwert"]
         design = "+" + "+".join(["-" * (len(col) + 2) for col in spalten]) + "+"
@@ -45,25 +45,25 @@ if __name__ == "__main__":
  
     ProzessIDs = []
 
-    if input == "T":
+    if input == "T" or input == "t":
         ProzessIDs.append(prozess_starten(TCP.conv_process))
         ProzessIDs.append(prozess_starten(TCP.log_process))
         ProzessIDs.append(prozess_starten(TCP.stat_process))
         ProzessIDs.append(prozess_starten(TCP.report_process))
 
-    elif input == "M":
+    elif input == "M" or input == "m":
         ProzessIDs.append(prozess_starten(MessageQueues.conv_process))
         ProzessIDs.append(prozess_starten(MessageQueues.log_process))
         ProzessIDs.append(prozess_starten(MessageQueues.stat_process))
         ProzessIDs.append(prozess_starten(MessageQueues.report_process))
 
-    elif input == "P":
+    elif input == "P" or input == "p":
         ProzessIDs.append(prozess_starten(PipesKelvin.conv_process))
         ProzessIDs.append(prozess_starten(PipesKelvin.log_process))
         ProzessIDs.append(prozess_starten(PipesKelvin.stat_process))
         ProzessIDs.append(prozess_starten(PipesKelvin.report_process))
 
-    elif input == "S":
+    elif input == "S" or input == "s":
         ProzessIDs.append(prozess_starten(Conv.conv_process))
         ProzessIDs.append(prozess_starten(Log.log_process))
         ProzessIDs.append(prozess_starten(Stat.stat_process))
