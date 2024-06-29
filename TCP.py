@@ -1,19 +1,11 @@
-import os
 import socket
 import random
 import time
-import signal
-import sys
 import struct
 
-def create_socket():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    return s
-
 def conv_process():
-    server1 = create_socket()
-    server2 = create_socket()
+    server1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server1.bind(('localhost', 9999))
     server2.bind(('localhost', 9998))
     
@@ -34,7 +26,7 @@ def conv_process():
         server2.close()
 
 def log_process():
-    client = create_socket()
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     while True:
         try:
             client.connect(('localhost', 9999))
@@ -53,8 +45,8 @@ def log_process():
         client.close()
 
 def stat_process():
-    server = create_socket()
-    server3 = create_socket()
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server3 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     while True:
         try:
             server.connect(('localhost', 9998))
@@ -82,7 +74,7 @@ def stat_process():
 
 
 def report_process():
-    client3 = create_socket()
+    client3 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     while True:
         try:
             client3.connect(('localhost', 9996))
