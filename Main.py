@@ -10,21 +10,26 @@ import Stat
 import Report
 import sys
 
+# Hauptprogramm
 if __name__ == "__main__":
 
+    # Signal-Handler für SIGINT (z.B. Strg+C)
     def signal_handler(signum, frame):
         print("\nBeende das Programm...")
+        # Sendet SIGTERM an alle Kindprozesse, um sie zu beenden
         for pid in ProzessIDs:
             os.kill(pid, signal.SIGTERM)
         sys.exit()
 
+    # Funktion zum Starten eines neuen Prozesses
     def prozess_starten(prozess):
-        pid = os.fork()
-        if pid == 0:
-            prozess()
-            os._exit(0)
-        return pid
+        pid = os.fork()  # Erstellt einen neuen Prozess
+        if pid == 0:  # Kindprozess
+            prozess()  # Führt die übergebene Funktion im Kindprozess aus
+            os._exit(0)  # Beendet den Kindprozess nach Ausführung der Funktion
+        return pid  # Gibt die PID des Kindprozesses im Elternprozess zurück
 
+    # Benutzeraufforderung zur Auswahl der Implementierungsvariante
     print("Message Queues: M")
     print("Pipes: P")
     print("Shared Memory: S")
@@ -32,6 +37,7 @@ if __name__ == "__main__":
 
     input = input("Wählen sie ihre Implementierungsvariante: ")
 
+    # Wenn eine gültige Auswahl getroffen wurde
     if input == "T" or input == "S" or input == "M" or input == "P" or input == "t" or input == "s" or input == "m" or input == "p" :
         # Tabellenüberschrift und Design für die Ausgabe
         spalten = ["Zeit", "Summe", "Mittelwert"]
@@ -44,8 +50,9 @@ if __name__ == "__main__":
             print(f" {col} |", end="")
         print("\n" + design)
  
-    ProzessIDs = []
+    ProzessIDs = []  # Liste zum Speichern der PIDs der gestarteten Prozesse
 
+    # Startet die entsprechenden Prozesse basierend auf der Auswahl des Benutzers
     if input == "T" or input == "t":
         ProzessIDs.append(prozess_starten(TCP.conv_process))
         ProzessIDs.append(prozess_starten(TCP.log_process))
@@ -71,10 +78,14 @@ if __name__ == "__main__":
         ProzessIDs.append(prozess_starten(Report.report_process))
     
     else:
+        # Wenn eine ungültige Eingabe gemacht wurde
         print("Eingabe nicht erkannt")
         sys.exit()
 
+    # Setzt den Signal-Handler für SIGINT (z.B. Strg+C)
     signal.signal(signal.SIGINT, signal_handler)
     
+    # Hält den Hauptprozess am Laufen, bis ein SIGINT empfangen wird
     while True:
         time.sleep(1)
+
