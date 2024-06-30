@@ -8,6 +8,7 @@ import Conv
 import Log
 import Stat
 import Report
+import sys
 
 if __name__ == "__main__":
 
@@ -15,7 +16,7 @@ if __name__ == "__main__":
         print("\nBeende das Programm...")
         for pid in ProzessIDs:
             os.kill(pid, signal.SIGTERM)
-        os._exit(0)
+        sys.exit()
 
     def prozess_starten(prozess):
         pid = os.fork()
@@ -71,7 +72,7 @@ if __name__ == "__main__":
     
     else:
         print("Eingabe nicht erkannt")
-        exit()
+        sys.exit()
 
     signal.signal(signal.SIGINT, signal_handler)
     
