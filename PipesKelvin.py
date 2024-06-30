@@ -22,7 +22,7 @@ def conv_process():
                     conv_zu_stat.write(f"{value}\n")
                     conv_zu_stat.flush()
                 time.sleep(1)  # 0,5 Sekunden warten, bevor der nächste Wert generiert wird
-        except KeyboardInterrupt:
+        finally:
             os.remove(conv_zu_log_pipe)
             os.remove(conv_zu_stat_pipe)
 
@@ -36,7 +36,7 @@ def log_process():
                     log_datei.write(f"{value}\n")
                     log_datei.flush()
                 time.sleep(1)
-        except KeyboardInterrupt:
+        finally:
             pass 
 
 # Stat: Empfängt Messwerte, berechnet Statistiken und sendet diese 
@@ -55,7 +55,7 @@ def stat_process():
                     stat_to_report.write(f"{stats['mean']} {stats['sum']}\n")
                     stat_to_report.flush()
                 time.sleep(1)  
-        except KeyboardInterrupt:
+        finally:
             os.remove(stat_zu_report_pipe)
 
 # Report: Empfängt Statistiken und gibt sie aus
@@ -69,5 +69,5 @@ def report_process():
                     mean, total_sum = float(stats[0]), int(stats[1])
                     print(f"| {time.strftime('%H:%M:%S')} | {total_sum} | {mean} |")
                 time.sleep(1) 
-        except KeyboardInterrupt:
+        finally:
             pass

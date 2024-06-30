@@ -21,7 +21,7 @@ def conv_process():
             client_socket1.sendall(value)
             client_socket2.sendall(value)
             time.sleep(1)
-    except KeyboardInterrupt:
+    finally:
         server1.close()
         server2.close()
 
@@ -41,7 +41,7 @@ def log_process():
             with open("log.txt", "a") as log:
                 log.write(str(value) + "\n")
                 log.flush()
-    except KeyboardInterrupt:
+    finally:
         client.close()
 
 def stat_process():
@@ -68,7 +68,7 @@ def stat_process():
             average = sum(values) // len(values)
             client_socket.sendall(struct.pack('2i', sum(values), average))
             time.sleep(1)
-    except KeyboardInterrupt:
+    finally:
         server.close()
         server3.close()
 
@@ -88,5 +88,5 @@ def report_process():
             data = client3.recv(8)
             sum, avg = struct.unpack('2i', data)
             print(f"| {time.strftime('%H:%M:%S')} | {sum} | {avg} |")
-    except KeyboardInterrupt:
+    finally:
         client3.close()

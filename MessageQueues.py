@@ -13,7 +13,7 @@ def conv_process():
                 SendToQueue("/mq1", value, None)
                 SendToQueue("/mq2", value, None)
             time.sleep(1)
-    except KeyboardInterrupt:
+    finally:
         mq1.unlink()
         mq2.unlink()
 
@@ -24,7 +24,7 @@ def log_process():
                 value = ReceiveFromQueue("/mq1")
                 log.write(f"{value}\n")
                 log.flush()
-        except KeyboardInterrupt:
+        finally:
             pass
 
 def stat_process():
@@ -39,7 +39,7 @@ def stat_process():
                 average = sum(values) / len(values)
                 SendToQueue("/mq3", sum_values, average)
                 time.sleep(1)
-    except KeyboardInterrupt:
+    finally:
         mq3.unlink()
 
 def report_process():
@@ -49,7 +49,7 @@ def report_process():
             if sum_values is not None and average is not None:
                 print(f"| {time.strftime('%H:%M:%S')} | {sum_values} | {average} |")
             time.sleep(1)
-    except KeyboardInterrupt:
+    finally:
         pass
 
 def SendToQueue(name, value, value2):
