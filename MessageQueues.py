@@ -29,15 +29,14 @@ def log_process():
 
 def stat_process():
     mq3 = posix_ipc.MessageQueue("/mq3", flags=posix_ipc.O_CREAT, mode=0o600, max_messages=10, max_message_size=1024)
-    sum_values = 0
-    count = 0
+    values = []
     try:
         while True:
             value = ReceiveFromQueue("/mq2")
             if value is not None:
-                sum_values += value
-                count += 1
-                average = sum_values / count
+                values.append(value)
+                sum_values = sum(values)
+                average = sum(values) / len(values)
                 SendToQueue("/mq3", sum_values, average)
                 time.sleep(1)
     except KeyboardInterrupt:
